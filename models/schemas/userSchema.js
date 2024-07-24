@@ -10,6 +10,7 @@ const userSchema = auditSchema({
         unique: true,
         sparse: true
     },
+    // name: { type: String, required: true },
     name: String,
     email: [
         Schema(
