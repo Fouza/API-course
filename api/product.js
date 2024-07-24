@@ -5,34 +5,21 @@ export default ({ config, db }) => {
     let router = Router()
 
     // TO retrieve all products
-    router.get('/', async (req, res) => {
-
-        const result = await productsCollection.find()
-        res.json(result)
-    })
-
-    router.get('/:id([1-9]+)', (req, res) => {
-        const { id } = req.params
-        const product = null
-        if (!product) {
-            res.status(404).send({ message: `Product with id=${id} not found` })
-        } else {
-            res.status(200).send({ product: product })
+    // POST /products
+    router.post('/', async (req, res) => {
+        try {
+            const newProduct = req.body;
+            await productsCollection.create(newProduct).then(response => {
+                res.send({ payload: response })
+            });
+        } catch (error) {
+            if (error.code === 11000) {
+                res.status(400).send({ success: false, message: "Product with this name already exists" })
+            } else {
+                res.status(500).send({ success: false, message: error.errorResponse.errmsg })
+            }
         }
-    })
-
-    router.post('/:id([1-9]+)', (req, res) => {
-
-        const { id } = req.params;
-        const { image } = req.body //Body not parsed yet
-
-        if (!image) {
-            res.status(418).send({ message: 'No image sent' })
-        }
-        res.status(200).send({
-            product: `Image of product with id=${id} inserted`,
-        })
-    })
+    });
 
     return router
 }
