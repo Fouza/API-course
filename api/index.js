@@ -3,7 +3,7 @@ import product from "./product.js";
 import user from "./user.js";
 import order from "./order.js";
 
-export default ({ config, db }) => {
+export default ({ config, database }) => {
     let api = Router();
 
     api.use('/product', product({ config, db }))
