@@ -1,8 +1,67 @@
 import { Router } from "express"
 import { productsCollection } from "../models/index.js"
+import moment from "moment"
 
 export default ({ config, db }) => {
     let router = Router()
+
+
+    //Retrieve products
+    //That have orders in the last month
+    router.get('/last_month', async (req, res) => {
+        try {
+            console.log(moment().subtract(1, 'month').toISOString())
+            console.log(moment().subtract(1, 'month').toDate())
+            const products = await productsCollection.aggregate([
+                {
+                    $lookup: {
+                        from: 'orders',
+                        localField: '_id',
+                        foreignField: 'products.product_id',
+                        as: 'orders'
+                    },
+                },
+                {
+                    $unwind: '$orders'
+                },
+                {
+                    $unwind: '$orders.products'
+                },
+
+                {
+                    $match: {
+                        $expr: { $eq: ["$_id", "$orders.products.product_id"] }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        name: 1,
+                        'orders.createdAt': 1,
+                        'orders.products.product_id': 1,
+                        'orders.products.quantity': 1
+                    }
+                },
+                {
+                    $match: {
+                        'orders.createdAt': { $gt: moment().subtract(1, 'month').toDate() }
+                    }
+                },
+                {
+                    $group: {
+                        _id: "$_id",
+                        sum_quantity: { $sum: '$orders.products.quantity' },
+                        grouped_orders: { $push: "$orders" }
+                    }
+                }
+            ])
+            res.send(products)
+        } catch (e) {
+            res.send(e)
+        }
+    })
+
+
 
     // TO retrieve all products where one of his tags is 'Electronic'
     // amani boutiche khorf
