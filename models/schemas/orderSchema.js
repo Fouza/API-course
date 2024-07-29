@@ -9,7 +9,7 @@ const orderSchema = new Schema({
         quantity: { type: Number, required: true }
     }],
     total_price: { type: Number, required: true },
-    status: { type: String, required: true } //shipped, processing, delivered
-});
+    status: { type: String, required: true }, //shipped, processing, delivered
+}, { timestamps: true });
 
 export default orderSchema

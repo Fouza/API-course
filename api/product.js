@@ -8,10 +8,9 @@ export default ({ config, db }) => {
 
     //Retrieve products
     //That have orders in the last month
+    //total quantity
     router.get('/last_month', async (req, res) => {
         try {
-            console.log(moment().subtract(1, 'month').toISOString())
-            console.log(moment().subtract(1, 'month').toDate())
             const products = await productsCollection.aggregate([
                 {
                     $lookup: {
@@ -19,7 +18,7 @@ export default ({ config, db }) => {
                         localField: '_id',
                         foreignField: 'products.product_id',
                         as: 'orders'
-                    },
+                    }
                 },
                 {
                     $unwind: '$orders'
@@ -27,7 +26,6 @@ export default ({ config, db }) => {
                 {
                     $unwind: '$orders.products'
                 },
-
                 {
                     $match: {
                         $expr: { $eq: ["$_id", "$orders.products.product_id"] }
@@ -38,8 +36,7 @@ export default ({ config, db }) => {
                         _id: 1,
                         name: 1,
                         'orders.createdAt': 1,
-                        'orders.products.product_id': 1,
-                        'orders.products.quantity': 1
+                        'orders.products': 1
                     }
                 },
                 {
@@ -50,10 +47,11 @@ export default ({ config, db }) => {
                 {
                     $group: {
                         _id: "$_id",
-                        sum_quantity: { $sum: '$orders.products.quantity' },
+                        sum_quantity: { $sum: "$orders.products.quantity" },
                         grouped_orders: { $push: "$orders" }
                     }
-                }
+                },
+
             ])
             res.send(products)
         } catch (e) {
@@ -71,31 +69,11 @@ export default ({ config, db }) => {
     //Dib mehdi mouad
     // anis maamra
 
-    //mehdi
-    router.get("/", async (req, res) => {
-        let Exception = { message: "!!there is no product which price >30" };
-        try {
-            await productsCollection
-                .find({ price: { $gt: 30 } })
-                .then((products_30) => {
-                    if (products_30.length === 0) {
-                        throw Exception;
-                    }
-                    res.status(200).send({ playload: products_30 });
-                });
-        } catch (error) {
-            res.send({
-                success: false,
-                message: "!!there is no product which price >30",
-            });
-        }
-    });
 
 
-    //Abdallah Not working
-    router.get("/prod", async (req, res) => {
+    //Abdallah
+    router.get("/prod/:price", async (req, res) => {
         try {
-            console.log(req.query)
             if (req.query.price < 0) {
                 res.status(400).send({ message: "Price cannot be negative" });
             } else {
