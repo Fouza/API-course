@@ -13,9 +13,15 @@ const userSchema = new Schema({
         zipcode: String
     },
     orders: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Order' }]
-}, { timestamps: true, virtuals: true });
+}, { virtuals: true });
 
-userSchema.index('username')
+userSchema.virtual('type_person')
+    .get(function () {
+        return this.age > 30 ? 'old' : 'young'
+    })
+
+
+// userSchema.index('username')
 userSchema.virtual('fullName')
     .get(function () {
         return `${this.firstName} ${this.lastName}`;

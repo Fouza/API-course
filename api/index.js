@@ -15,5 +15,6 @@ export default ({ config, db }) => {
 
     api.use('/views', views({ config, db }))
 
+
     return api
 }

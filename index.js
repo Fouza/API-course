@@ -5,8 +5,7 @@ import api from './api/index.js';
 import CONFIG from './config.json' assert {type: 'json'}
 import mongoose from 'mongoose'
 
-import swaggerUi from 'swagger-ui-express';
-import swaggerDocument from './swagger.json' assert {type: 'json'};
+
 import swagger from './api/swagger.js';
 
 

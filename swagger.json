@@ -11,13 +11,66 @@
       "description": "Local server"
     }
   ],
+  "tags": [
+    {
+      "name": "User Operations",
+      "description": "Operations related to user management"
+    },
+    {
+      "name": "Product Operations",
+      "description": "Operations related to Products"
+    }
+  ],
   "paths": {
-    "/api/user/late_age": {
-      "get": {
+    "/api/user/late_age/:age": {
+      "post": {
+        "tags": ["User Operations"],
         "summary": "Get users older than 25",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "age",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Age to filter users (default is 25)"
+          },
+          {
+            "in": "query",
+            "name": "otherParameter",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "An example of another query parameter"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "age": {
+                    "type": "integer"
+                  }
+                },
+                "required": ["name"]
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Successful response"
+          },
+          "400": {
+            "description": "user undefined"
           }
         }
       }

@@ -26,11 +26,13 @@ export default ({ config, db }) => {
             }
         });
 
+        console.log(newUser.type_person)
+
         // Setting the virtual property fullName
-        newUser.fullName = 'John Doe';
-        console.log('First Name:', newUser.firstName); // Output: 'John'
-        console.log('Last Name:', newUser.lastName); // Output: 'Doe'
-        res.send({ test: 'test' })
+        // newUser.fullName = 'John Doe';
+        // console.log('First Name:', newUser.firstName); // Output: 'John'
+        // console.log('Last Name:', newUser.lastName); // Output: 'Doe'
+        res.send({ test: 'test', user: newUser })
     })
 
     // Create new user with dummy data
