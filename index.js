@@ -4,13 +4,18 @@ import dotenv from 'dotenv';
 import api from './api/index.js';
 import CONFIG from './config.json' assert {type: 'json'}
 import mongoose from 'mongoose'
-
+import cors from 'cors';
 
 import swagger from './api/swagger.js';
 
 
 const PORT = CONFIG.port || 7000
+
 const app = express();
+app.use(cors({
+    origin: CONFIG.corsOrigin,
+    optionsSuccessStatus: 200
+}));
 
 //connect to Database///////////////////////////////////////////////////////////////////////////////////////
 mongoose.connect(CONFIG.mongo_url)
@@ -20,6 +25,9 @@ mongoose.connect(CONFIG.mongo_url)
 
         //custom middleware to log and see requests
         app.use(requestLogger)
+
+        //use cors
+
 
         //api config
         app.use('/api', api({ config: CONFIG, db }))

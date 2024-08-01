@@ -72,16 +72,21 @@ export default ({ config, db }) => {
 
 
     //Abdallah
-    router.get("/prod/:price", async (req, res) => {
+    router.get("/prod", async (req, res) => {
         try {
-            if (req.query.price < 0) {
-                res.status(400).send({ message: "Price cannot be negative" });
+            const { price } = req.query
+            if (price) {
+                const price = parseInt(req.query.price)
+                if (price < 0) {
+                    res.send({ status: 400, message: "Price cannot be negative" });
+                } else {
+                    const products = await productsCollection.find({
+                        price: { $gt: price },
+                    });
+                    res.json({ status: 200, products });
+                }
             } else {
-                const products = await productsCollection.find({
-                    price: { $gt: req.params.price },
-                });
-                res.json(products);
-
+                res.send({ status: 400, message: 'You have to specify a price' })
             }
         } catch (err) {
             res.status(500).json({ message: "Error fetching products" });

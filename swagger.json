@@ -29,7 +29,7 @@
         "parameters": [
           {
             "in": "path",
-            "name": "age",
+            "name": "price",
             "required": true,
             "schema": {
               "type": "integer"
@@ -67,10 +67,36 @@
         },
         "responses": {
           "200": {
-            "description": "Successful response"
+            "description": "Successful response if you send a good request"
           },
           "400": {
             "description": "user undefined"
+          }
+        }
+      }
+    },
+    "/api/product/prod": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "price",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "price seuil"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Price negative"
+          },
+          "500": {
+            "description": "Server Error"
           }
         }
       }

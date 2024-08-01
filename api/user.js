@@ -41,9 +41,9 @@ export default ({ config, db }) => {
             const new_user = req.body
             const user = await usersCollection.create(new_user)
             console.log(user.formal_name, user.firstName)
-            res.send(user)
+            res.send({ status: 200, user })
         } catch (e) {
-            res.send(e)
+            res.send({ error: e, message: 'Server Error' })
         }
     })
 
